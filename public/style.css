@@ -1,0 +1,256 @@
+/* Basic Reset and Font */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    line-height: 1.6;
+
+    /* === BACKGROUND SETUP === */
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+    min-height: 100vh;
+}
+
+/* Container Formulir */
+.container {
+    /* === UKURAN FORMULIR DIPERKECIL === */
+    max-width: 780px;
+    width: 100%;
+
+    /* === EFEK KACA (GLASSMORPHISM) === */
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    padding: 2.5em 3.5em;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+}
+
+/* Pengaturan Logo */
+.logo-container {
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.logo-container img {
+    max-width: 400px;
+    height: auto;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 2.5em;
+}
+
+header h1 {
+    color: #2c3e50;
+    font-size: 2.4em;
+    font-weight: 700;
+    margin-bottom: 0.1em;
+}
+
+.subtitle {
+    color: #555;
+    font-weight: 500;
+    font-size: 1.1em;
+}
+
+/* Fieldset and Legend (Judul per Sesi) */
+fieldset {
+    border: none;
+    margin-bottom: 2.5em;
+    padding: 0;
+}
+
+legend {
+    width: 100%;
+    font-size: 1.5em;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1.2em;
+    padding-bottom: 0.5em;
+    border-bottom: 3px solid #b71c1c;
+}
+
+/* Grup Form */
+.form-group {
+    margin-bottom: 1.5em;
+}
+
+.form-group-inline {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.form-group-inline .form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Labels */
+label {
+    display: block;
+    margin-bottom: 0.6em;
+    color: #444;
+    font-weight: 500;
+}
+
+/* Input, Select, Textarea */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    font-family: 'Poppins', sans-serif;
+    background-color: #fdfdfd;
+    transition: all 0.3s ease;
+}
+
+/* Efek saat input dipilih (focus) */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #b71c1c;
+    box-shadow: 0 0 8px rgba(183, 28, 28, 0.3);
+    background-color: #fff;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Tombol Radio (Jenis Kelamin) */
+.radio-group {
+    display: flex;
+    gap: 20px;
+}
+
+.radio-group label {
+    display: inline-flex;
+    align-items: center;
+    font-weight: normal;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 8px;
+    transform: scale(1.1);
+}
+
+/* Tombol Upload File */
+input[type="file"] {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 0.95em;
+}
+
+input[type="file"]::file-selector-button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 15px;
+    transition: background-color 0.3s;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #333;
+}
+
+small {
+    display: block;
+    margin-top: 0.5em;
+    color: #6c757d;
+    font-size: 0.85em;
+}
+
+.info-ppdb {
+    margin-bottom: 2em;
+    padding: 1em;
+    background-color: #fff0f0;
+    border-left: 6px solid #c62828;
+    border-radius: 10px;
+}
+
+/* Tombol Kirim Pendaftaran */
+button[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(90deg, #c62828, #a90000);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    margin-top: 1em;
+}
+
+button[type="submit"]:hover {
+    background: linear-gradient(90deg, #a90000, #8a0000);
+    box-shadow: 0 6px 15px rgba(183, 28, 28, 0.4);
+    transform: translateY(-3px);
+}
+
+/* Desain Responsif untuk HP */
+@media (max-width: 768px) {
+    body {
+        padding: 20px 10px;
+        align-items: stretch;
+    }
+
+    .container {
+        padding: 1.5em;
+        margin-top: 0;
+    }
+
+    .logo-container img {
+        max-width: 80%;
+    }
+
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    .form-group-inline {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-group-inline .form-group {
+        margin-bottom: 1.5em;
+    }
+}

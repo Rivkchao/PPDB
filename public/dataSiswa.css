@@ -1,0 +1,150 @@
+        /* Base Styles */
+        body {
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background: url('background.jpg') center center / cover no-repeat fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 20px;
+            min-height: 100vh;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Logo */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2em;
+        }
+
+        .logo-container img {
+            max-width: 400px;
+            height: auto;
+        }
+
+        /* Headings */
+        h2,
+        h3 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Paraghrap */
+        p {
+            text-align: center;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        span {
+            color: #333;
+        }
+
+        /* Status Styles */
+        .status-verifikasi {
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status-diterima {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-ditolak {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-menunggu {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        /* Button Group */
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Style untuk link button (Logout, Edit) */
+        .button-group a,
+        #btn-edit {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            background-color: #b71c1c;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .button-group a:hover,
+        #btn-edit:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Tombol utama seperti 'Bayar Sekarang' */
+        .btn-success {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #28a745, #00c853);
+            color: white;
+            font-size: 1em;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(90deg, #00c853, #28a745);
+            box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4);
+            transform: translateY(-3px);
+        }
+
+
+        /* View Link */
+        .view-link {
+            text-decoration: none;
+            color: #0069d9;
+        }
+
+        .view-link:hover {
+            text-decoration: underline;
+        }
