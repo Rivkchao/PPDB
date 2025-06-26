@@ -3,69 +3,100 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Pembayaran;
-use App\Models\Pendaftar;
 use Midtrans\Config;
 use Midtrans\Snap;
+use App\Models\Pendaftar;
+use App\Models\Pembayaran;
 use Illuminate\Support\Facades\Log;
 
 class MidtransController extends Controller
 {
+    public function __construct()
+    {
+        Config::$serverKey = config('services.midtrans.server_key');
+        Config::$isProduction = config('services.midtrans.is_production');
+        Config::$isSanitized = true;
+        Config::$is3ds = true;
+    }
+
     public function getSnapToken(Request $request)
     {
-        // Logging masuk ke fungsi
-        Log::info('Masuk ke getSnapToken', $request->only('nisn', 'nama'));
-
-        $request->validate([
-            'nisn' => 'required',
-            'nama' => 'required'
-        ]);
-
         try {
-            // Konfigurasi Midtrans
-            Config::$serverKey = 'SB-Mid-server-8nzNiPQzJJRxbug2TDyXOPRT';
-            Config::$isProduction = false;
-            Config::$isSanitized = true;
-            Config::$is3ds = true;
+            // Cari data pendaftar berdasarkan NISN
+            $pendaftar = Pendaftar::where('nisn', $request->nisn)->first();
 
-            $orderId = 'ORDER-' . $request->nisn . '-' . time();
-            $pendaftar = Pendaftar::with('gelombang')->where('nisn', $request->nisn)->first();
-            $grossAmount = $pendaftar->gelombang->biaya;
+            if (!$pendaftar) {
+                return response()->json(['error' => 'Data siswa tidak ditemukan'], 404);
+            }
 
-            $transaction = [
+            $orderId = 'ORDER-' . uniqid();
+
+            // Simpan ke tabel pembayaran
+            Pembayaran::updateOrCreate(
+                ['nisn' => $pendaftar->nisn],
+                [
+                    'order_id' => $orderId,
+                    'status' => 'pending',
+                    'gross_amount' => $request->biaya,
+                    'payment_type' => '-',
+                ]
+            );
+
+            $params = [
                 'transaction_details' => [
                     'order_id' => $orderId,
-                    'gross_amount' => $grossAmount,
+                    'gross_amount' => (int) $request->biaya,
                 ],
                 'customer_details' => [
                     'first_name' => $request->nama,
-                ]
+                    'email' => $pendaftar->email ?? 'dummy@example.com',
+                ],
+                'item_details' => [[
+                    'id' => 'biaya-gelombang-' . $request->nisn,
+                    'price' => (int) $request->biaya,
+                    'quantity' => 1,
+                    'name' => 'Biaya Pendaftaran'
+                ]],
+                'callbacks' => [
+                    'finish' => route('siswa.profil')
+                ],
+                'notification_url' => url('/midtrans/callback'),
             ];
 
-            $snapToken = Snap::getSnapToken($transaction);
-
-            Log::info('Sebelum insert ke pembayaran', ['order_id' => $orderId]);
-
-            // Simpan ke tabel pembayaran
-            Pembayaran::create([
-                'nisn' => $request->nisn,
-                'order_id' => $orderId,
-                'status' => 'pending',
-                'gross_amount' => $grossAmount,
-                'payment_type' => '-',
-                'transaction_time' => now(),
-                'midtrans_response' => json_encode($transaction),
-            ]);
-
-            Log::info('Setelah insert ke pembayaran');
+            $snapToken = Snap::getSnapToken($params);
 
             return response()->json(['token' => $snapToken]);
         } catch (\Exception $e) {
-            Log::error('Gagal membuat Snap Token atau menyimpan pembayaran', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return response()->json(['error' => 'Terjadi kesalahan saat memproses pembayaran.'], 500);
+            Log::error('Midtrans error: ' . $e->getMessage());
+            return response()->json(['error' => 'Gagal membuat token Midtrans'], 500);
         }
     }
+
+   public function updateStatusTerbayar(Request $request)
+{
+    try {
+        // Simpan ke tabel pembayaran
+        Pembayaran::updateOrCreate(
+            ['nisn' => $request->nisn],
+            [
+                'order_id' => $request->order_id,
+                'status' => 'settlement',
+                'gross_amount' => $request->gross_amount,
+                'payment_type' => $request->payment_type,
+                'transaction_time' => $request->transaction_time,
+                'midtrans_response' => json_encode($request->all())
+            ]
+        );
+
+        // Update status pendaftar
+        Pendaftar::where('nisn', $request->nisn)
+            ->update(['status_verifikasi' => 'terbayar']);
+
+        return response()->json(['message' => 'Status pembayaran berhasil diperbarui.']);
+    } catch (\Exception $e) {
+        Log::error('Update Status Error: ' . $e->getMessage());
+        return response()->json(['error' => 'Gagal update status'], 500);
+    }
+}
+
 }

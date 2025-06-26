@@ -5,13 +5,14 @@
     box-sizing: border-box;
 }
 
+
 body {
     font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
     line-height: 1.6;
 
     /* === BACKGROUND SETUP === */
-    background-image: url('background.jpg');
+    background-image: url('../image/background.jpg');
     background-size: cover;
     background-position: center center;
     background-attachment: fixed;
@@ -26,15 +27,11 @@ body {
 
 /* Container Formulir */
 .container {
-    /* === UKURAN FORMULIR DIPERKECIL === */
     max-width: 780px;
     width: 100%;
-
-    /* === EFEK KACA (GLASSMORPHISM) === */
     background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-
     padding: 2.5em 3.5em;
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -203,7 +200,8 @@ small {
 }
 
 /* Tombol Kirim Pendaftaran */
-button[type="submit"] {
+button[type="submit"],
+button {
     width: 100%;
     padding: 15px;
     background: linear-gradient(90deg, #c62828, #a90000);
@@ -219,10 +217,28 @@ button[type="submit"] {
     margin-top: 1em;
 }
 
-button[type="submit"]:hover {
+button[type="submit"]:hover,
+button {
     background: linear-gradient(90deg, #a90000, #8a0000);
     box-shadow: 0 6px 15px rgba(183, 28, 28, 0.4);
     transform: translateY(-3px);
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+        left: -200px;
+    }
+
+    .sidebar.open~.main-content {
+        margin-left: 200px;
+    }
+
+    .navbar-admin .wrap {
+        padding: 1rem;
+    }
 }
 
 /* Desain Responsif untuk HP */

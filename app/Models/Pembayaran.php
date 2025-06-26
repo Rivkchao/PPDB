@@ -19,4 +19,3 @@ class Pembayaran extends Model
 
     public $timestamps = true;
 }
-

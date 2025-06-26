@@ -12,7 +12,7 @@ class AuthSiswaMiddleware
     public function handle($request, Closure $next)
     {
         if (!Session::has('nisn')) {
-            return redirect('/login_siswa'); // arahkan ke login siswa
+            return redirect('/login_siswa'); 
         }
 
         return $next($request);

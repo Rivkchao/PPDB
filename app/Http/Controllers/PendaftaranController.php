@@ -28,7 +28,7 @@ class PendaftaranController extends Controller
             'scan_kelakuan' => 'nullable|file|mimes:jpg,jpeg,pdf|max:7000',
         ]);
 
-        $now = Carbon::now()->toDateString(); // '2025-06-21'
+        $now = Carbon::now()->toDateString(); 
 
         $gelombangAktif = Gelombang::where('tanggal_mulai', '<=', $now)
             ->where('tanggal_selesai', '>=', $now)

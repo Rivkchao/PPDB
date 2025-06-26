@@ -4,16 +4,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profil Pendaftar</title>
+    <title>Profil Siswa PPDB - UIHC</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ asset('dataSiswa.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dataSiswa.css') }}">
 
 </head>
 
 <body>
     <div class="container">
         <div class="logo-container">
-            <img src="{{ asset('Logo 1.png') }}" alt="Logo Sekolah">
+            <img src="{{ asset('image/Logo 1.png') }}" alt="Logo Sekolah">
         </div>
 
         <h2>Profil Calon Peserta Didik</h2>
@@ -40,9 +40,17 @@
         <p class="status-verifikasi status-menunggu">⏳ Silakan selesaikan pembayaran terlebih dahulu.</p>
         @endif
 
+        <div class="button-group">
+            @if ($status == 'menunggu')
+            <button class="btn-success" id="pay-button">💳 Bayar Sekarang</button>
+            @endif
+        </div>
+
         <div class="section">
             <h3>Data Siswa</h3>
-            @foreach ([
+            @php
+            $status = strtolower($data->status_verifikasi);
+            $fields = [
             'Nama Lengkap' => $data->nama_lengkap,
             'NISN' => $data->nisn,
             'NIK' => $data->nik,
@@ -53,14 +61,23 @@
             'No. HP' => $data->telepon,
             'Email' => $data->email,
             'Asal Sekolah' => $data->asal_sekolah,
-            'Jurusan Pilihan' => $data->jurusan
-            ] as $label => $value)
+            'Jurusan Pilihan' => $data->jurusan,
+            ];
+
+            // Tambahkan catatan penolakan hanya kalau status "ditolak"
+            if ($status === 'ditolak') {
+            $fields['Catatan Penolakan'] = $data->catatan_penolakan;
+            }
+            @endphp
+
+            @foreach ($fields as $label => $value)
             <div class="info-item">
                 <label>{{ $label }}:</label>
                 <span>{{ $value }}</span>
             </div>
             @endforeach
         </div>
+
 
         <div class="section">
             <h3>Data Orang Tua/Wali</h3>
@@ -92,7 +109,7 @@
                 <label>{{ $label }}:</label>
                 <span>
                     @if ($file)
-                    <a class="view-link" href="{{ asset('uploads/' . $file) }}" target="_blank">Lihat Dokumen</a>
+                    <a class="view-link" href="{{ asset('storage/' . $file) }}" target="_blank">Lihat Dokumen</a>
                     @else
                     <em>Belum diunggah</em>
                     @endif
@@ -103,16 +120,14 @@
 
         <div class="button-group">
             @if ($status == 'ditolak')
-            <a href="{{ route('siswa.edit') }}" id="btn-edit">Edit Data</a>
-            @endif
-
-            @if ($status == 'menunggu')
-            <button class="btn-success" id="pay-button">💳 Bayar Sekarang</button>
+            <button type="submit" style="background:none; border: none; cursor: pointer; padding: 0;">
+                <a href="{{ route('siswa.revisi_siswa') }}" id="btn-edit">✏️ Revisi Data</a>
+            </button>
             @endif
 
             <form id="logout-form" action="{{ route('logout.siswa') }}" method="POST" style="display: inline;">
                 @csrf
-                <button type="submit" style="background: none; border: none; color: #007BFF; cursor: pointer; padding: 0;">
+                <button type="submit" style="background:none; border: none; cursor: pointer; padding: 0;">
                     <a>🔓 Keluar</a>
                 </button>
             </form>
@@ -121,77 +136,75 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-n4EimX_k9kBXW1lF"></script>
+    <!-- Midtrans Snap.js Sandbox Script -->
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+
+
     <script>
-        const payBtn = document.getElementById('pay-button');
-        if (payBtn) {
-            payBtn.addEventListener('click', function() {
+        const payButton = document.getElementById('pay-button');
+
+        if (payButton) {
+            payButton.addEventListener('click', function() {
                 fetch("{{ route('midtrans.token') }}", {
-                        method: 'POST',
+                        method: "POST",
                         headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
                         },
                         body: JSON.stringify({
-                            nisn: '{{ $data->nisn }}',
-                            nama: '{{ $data->nama_lengkap }}'
+                            nama: "{{ $data->nama_lengkap }}",
+                            nisn: "{{ $data->nisn }}",
+                            biaya: "{{ $data->gelombang->biaya ?? 0 }}"
                         })
                     })
-                    .then(async res => {
-                        const text = await res.text();
-                        if (!res.ok) {
-                            console.error('Fetch failed. Response was: ', text);
-                            throw new Error(text);
-                        }
-                        return JSON.parse(text);
-                    })
+                    .then(response => response.json())
                     .then(data => {
-                        snap.pay(data.token, {
-                            onSuccess: function(result) {
-                                fetch('/update-status-terbayar', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                        },
-                                        body: JSON.stringify({
-                                            nisn: '{{ $data->nisn }}'
+                        if (data.token) {
+                            window.snap.pay(data.token, {
+                                onSuccess: function(result) {
+                                    fetch("{{ route('midtrans.updateStatusTerbayar') }}", {
+                                            method: "POST",
+                                            headers: {
+                                                "Content-Type": "application/json",
+                                                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                            },
+                                            body: JSON.stringify({
+                                                order_id: result.order_id,
+                                                nisn: "{{ $data->nisn }}",
+                                                nama: "{{ $data->nama_lengkap }}",
+                                                biaya: "{{ $data->gelombang->biaya ?? 0 }}",
+                                                payment_type: result.payment_type,
+                                                transaction_time: result.transaction_time,
+                                                gross_amount: result.gross_amount
+                                            })
                                         })
-                                    })
-                                    .then(res => res.json())
-                                    .then(res => {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: 'Pembayaran Berhasil!',
-                                            text: res.message,
-                                            confirmButtonText: 'OK'
-                                        }).then(() => location.reload());
-                                    })
-                                    .catch(err => {
-                                        console.error('Update status error:', err);
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Gagal update status!',
-                                            text: 'Silakan coba lagi.',
-                                            confirmButtonText: 'OK'
+                                        .then(res => res.json())
+                                        .then(res => {
+                                            Swal.fire('Sukses', 'Pembayaran berhasil!', 'success').then(() => {
+                                                window.location.reload();
+                                            });
+                                        })
+                                        .catch(err => {
+                                            Swal.fire('Gagal', 'Gagal update status pembayaran.', 'error');
+                                            console.error(err);
                                         });
-                                    });
-                            },
-                            onPending: function() {
-                                Swal.fire({
-                                    icon: 'info',
-                                    title: 'Pembayaran Tertunda',
-                                    confirmButtonText: 'OK'
-                                });
-                            },
-                            onError: function() {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    confirmButtonText: 'OK'
-                                });
-                            }
-                        });
+                                },
+                                onPending: function(result) {
+                                    Swal.fire('Menunggu', 'Transaksi menunggu penyelesaian.', 'info');
+                                },
+                                onError: function(result) {
+                                    Swal.fire('Gagal', 'Terjadi kesalahan pada pembayaran.', 'error');
+                                },
+                                onClose: function() {
+                                    console.log("Snap closed");
+                                }
+                            });
+                        } else {
+                            Swal.fire('Gagal', data.error || 'Token gagal didapat');
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire('Error', 'Terjadi kesalahan: ' + error.message, 'error');
                     });
             });
         }

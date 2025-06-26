@@ -9,7 +9,7 @@ class LoginSiswaController extends Controller
 {
     public function showLoginForm()
     {
-        return view('login_siswa');
+        return view('siswa.login_siswa');
     }
 
     public function login(Request $request)
@@ -34,6 +34,6 @@ class LoginSiswaController extends Controller
     public function logout()
     {
         Session::forget('nisn');
-        return redirect()->route('login.siswa');
+        return redirect()->route('siswa.login.siswa');
     }
 }

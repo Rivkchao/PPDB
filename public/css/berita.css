@@ -1,0 +1,327 @@
+        :root {
+            --primary: #b71c1c;
+            --primary-dark: #8e0000;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: rgb(238, 238, 238);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .wrapper-dashboard {
+            padding: 5rem 10%;
+            width: 100%;
+            box-sizing: border-box;
+            margin-left: auto;
+        }
+
+        .main-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 5px -3px 10px rgba(0, 0, 0, 0.1), -4px -2px 6px rgba(0, 0, 0, 0.06);
+            padding: 2.5rem;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo-container img {
+            max-width: 300px;
+            height: auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        header .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .card-form {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            background: var(--light-gray);
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+            color: #444;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="text"]:focus,
+        input[type="file"]:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(183, 28, 28, 0.15);
+            outline: none;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* File upload styling */
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 1rem;
+            background: white;
+            border: 1px dashed #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-label:hover {
+            border-color: var(--primary);
+            background: rgba(183, 28, 28, 0.05);
+        }
+
+        .file-upload-button {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            transition: background-color 0.3s;
+        }
+
+        .file-upload-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .file-name {
+            font-size: 0.9rem;
+            color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex-grow: 1;
+            margin-right: 1rem;
+        }
+
+        button[type="submit"] {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        button[type="submit"]:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(183, 28, 28, 0.2);
+        }
+
+        /* Table styling */
+        .berita-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .berita-table th,
+        .berita-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .berita-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .berita-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .img-thumb {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-delete {
+            background-color: #e53935;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .btn-delete:hover {
+            background-color: #c62828;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 6px rgba(229, 57, 53, 0.2);
+        }
+
+        .alert-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #d6e9c6;
+            text-align: center;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .wrapper-dashboard {
+                padding: 4rem 5%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .wrapper-dashboard {
+                padding: 3rem 2rem;
+            }
+
+            .main-content {
+                padding: 1.8rem;
+            }
+
+            .berita-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            header h1 {
+                font-size: 1.7rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .wrapper-dashboard {
+                padding: 2.5rem 1.2rem;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .card-form {
+                padding: 1.4rem;
+            }
+
+            button[type="submit"],
+            .btn-delete {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
