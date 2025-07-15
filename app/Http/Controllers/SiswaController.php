@@ -20,7 +20,7 @@ class SiswaController extends Controller
         if (strtolower($data->status_verifikasi) === 'menunggu') {
             $statusBayar = strtolower($data->pembayaran->status ?? '');
             if (in_array($statusBayar, ['settlement', 'capture'])) {
-                $data->status_verifikasi = 'sudah bayar';
+                $data->status_verifikasi = 'terbayar';
                 $data->save();
             }
         }
