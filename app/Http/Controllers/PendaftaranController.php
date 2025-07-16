@@ -45,15 +45,24 @@ class PendaftaranController extends Controller
             ['gelombang_id' => $gelombangAktif ? $gelombangAktif->id : null]
         ));
         $uploads = [];
-        foreach (['pas_foto', 'scan_ijazah', 'scan_kk', 'scan_akta', 'scan_kelakuan'] as $file) {
-            if ($request->hasFile($file)) {
-                $uploads[$file] = $request->file($file)->store('dokumen', 'public');
+        try {
+            foreach (['pas_foto', 'scan_ijazah', 'scan_kk', 'scan_akta', 'scan_kelakuan'] as $file) {
+                if ($request->hasFile($file) && $request->file($file)->isValid()) {
+                    $uploads[$file] = $request->file($file)->store('dokumen', 'public');
+                } else {
+                    $uploads[$file] = null;
+                }
             }
+            // Pastikan nisn yang dipakai adalah dari pendaftar baru
+            $uploads['nisn'] = $pendaftar->nisn;
+            \App\Models\DokumenSiswa::updateOrCreate(
+                ['nisn' => $pendaftar->nisn],
+                $uploads
+            );
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal upload dokumen: ' . $e->getMessage() . ' | ' . $e->getTraceAsString());
         }
 
-        $uploads['nisn'] = $request->nisn;
-        DokumenSiswa::create($uploads);
-
-        return redirect()->route('login.siswa')->with('success', 'Pendaftaran berhasil!');
+        return redirect()->route('siswa.login.siswa')->with('success', 'Pendaftaran berhasil!');
     }
 }

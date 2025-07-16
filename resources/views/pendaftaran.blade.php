@@ -11,23 +11,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/styleform.css') }}">
     <link rel="stylesheet" href="{{ asset('css/pendaftaran.css') }}">
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
     <div class="container">
-        @if (session('success'))
-        <div style="color: green;">{{ session('success') }}</div>
-        @endif
-
-        @if ($errors->any())
-        <div style="color: red;">
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
 
         <form action="{{ route('pendaftaran.submit') }}" method="post" enctype="multipart/form-data">
             @csrf
@@ -120,8 +109,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="email">Email (opsional)</label>
-                        <input type="email" id="email" name="email">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
                     </div>
 
                     <div class="form-group">
@@ -162,7 +151,7 @@
 
                     <div class="form-group">
                         <label for="penghasilan-ortu">Penghasilan Orang Tua</label>
-                        <select id="penghasilan-ortu" name="penghasilan_ortu">
+                        <select id="penghasilan-ortu" name="penghasilan_ortu" required>
                             <option value="" disabled selected>Pilih rentang penghasilan</option>
                             <option value="<1jt">&lt; Rp 1.000.000</option>
                             <option value="1-3jt">Rp 1.000.000 - Rp 3.000.000</option>
@@ -227,7 +216,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="scan-kelakuan">Scan Surat Keterangan Kelakuan Baik (Opsional)</label>
+                        <label for="scan-kelakuan">Scan Surat Keterangan Kelakuan Baik</label>
                         <input type="file" id="scan-kelakuan" name="scan_kelakuan" accept="application/pdf, image/jpeg">
                         <small>Format: PDF atau JPG</small>
                     </div>
@@ -323,6 +312,43 @@
         showStep(currentStep);
     </script>
 
+    @if (session('success'))
+        <div id="swal-success" data-msg="{{ session('success') }}" style="display:none;"></div>
+    @endif
+    @if (session('error'))
+        <div id="swal-error" data-msg="{{ session('error') }}" style="display:none;"></div>
+    @endif
+    <script>
+        const swalSuccess = document.getElementById('swal-success');
+        if (swalSuccess) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: swalSuccess.dataset.msg,
+                confirmButtonColor: '#3085d6',
+            });
+        }
+        const swalError = document.getElementById('swal-error');
+        if (swalError) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: swalError.dataset.msg,
+                confirmButtonColor: '#d33',
+            });
+        }
+    </script>
+
+    @if ($errors->any())
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Validasi Gagal',
+            html: `<ul style='text-align:left;'>@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>`,
+            confirmButtonColor: '#d33',
+        });
+    </script>
+    @endif
 </body>
 
 
